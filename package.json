@@ -2,5 +2,7 @@
   "name": "tienda-musica",
   "descripción": "Tienda de Música",
   "versión": "1.0.0",
-  "dependencies": {}
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
