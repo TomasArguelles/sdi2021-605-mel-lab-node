@@ -18,4 +18,6 @@ require("./routes/rcanciones.js")(app, swig); // (app, param1, param2, etc.)
 
 app.listen(app.get('port'), function(){
     console.log("Servidor activo");
+    /*
+    mongodb://admin:admin@tiendamusica-shard-00-00.vtfvr.mongodb.net:27017,tiendamusica-shard-00-01.vtfvr.mongodb.net:27017,tiendamusica-shard-00-02.vtfvr.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-6xfaom-shard-0&authSource=admin&retryWrites=true&w=majority*/
 });
