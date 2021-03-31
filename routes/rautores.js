@@ -44,12 +44,38 @@ module.exports = function(app, swig) {
         res.send(respuesta);
     });
 
+    app.get('/autores/filtrar/:rol', function(req, res) {
+        let autores = [ {
+            "nombre" : "TTT",
+            "grupo" : "1zdvzdv",
+            "rol" : "cantante"
+        }, {
+            "nombre" : "TTeT",
+            "grupo" : "ramama2",
+            "rol" : "contante"
+        }, {
+            "nombre" : "TwTT",
+            "grupo" : "rtMF",
+            "rol" : "cantaonte"
+        } ];
+        let filtrados = []
+        autores.forEach(function(valor){
+            if (valor.rol === req.params.rol)
+                filtrados.push(valor)
+        });
+        let respuesta = swig.renderFile('views/autores.html', {
+            vendedor : 'Autores',
+            autores : filtrados
+        });
+        res.send(respuesta);
+    });
+
     app.get('/autor/:id', function(req, res) {
         let respuesta = 'id: ' + req.params.id;
         res.send(respuesta);
     });
 
-    app.get('/autores/:grupo', function(req, res) {
+    app.get('/autores/:redirect', function(req, res) {
         res.redirect('/autores');
     });
 
