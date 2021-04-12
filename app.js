@@ -12,6 +12,7 @@ let crypto = require('crypto');
 
 let fileUpload = require('express-fileupload');
 app.use(fileUpload());
+
 let mongo = require('mongodb');
 let swig = require('swig');
 let bodyParser = require('body-parser');
@@ -35,6 +36,8 @@ routerUsuarioSession.use(function(req, res, next) {
 //Aplicar routerUsuarioSession
 app.use("/canciones/agregar",routerUsuarioSession);
 app.use("/publicaciones",routerUsuarioSession);
+app.use("/cancion/comprar",routerUsuarioSession);
+app.use("/compras",routerUsuarioSession);
 
 //routerUsuarioAutor
 let routerUsuarioAutor = express.Router();
@@ -70,7 +73,17 @@ routerAudios.use(function(req, res, next) {
             if(req.session.usuario && canciones[0].autor === req.session.usuario ){
                 next();
             } else {
-                res.redirect("/tienda");
+                let criterio = {
+                    usuario : req.session.usuario,
+                    cancionId : mongo.ObjectID(idCancion)
+                };
+                gestorBD.obtenerCompras(criterio ,function(compras){
+                    if (compras != null && compras.length > 0 ){
+                        next();
+                    } else {
+                        res.redirect("/tienda");
+                    }
+                });
             }
         })
 });
