@@ -25,6 +25,47 @@ module.exports = {
             }
         });
     },
+    esAutor : function(usuario, cancion, funcionCallback){
+      this.mongo.MongoClient.connect(this.app.get('db'), function (err,db) {
+          if (err) {
+              funcionCallback(null);
+          } else {
+              let collection = db.collection('canciones');
+              collection.count({"autor":usuario, "_id": cancion}, function(err, result) {
+                  if (err) {
+                      funcionCallback(null);
+                  } else {
+                      if(result > 0)
+                          funcionCallback(true);
+                      else
+                          funcionCallback(false);
+                  }
+                  db.close();
+              });
+
+          }
+        });
+    },
+    esPropietario : function(usuario, cancion, funcionCallback){
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err,db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                let collection = db.collection('compras');
+                collection.count({"usuario":usuario, "cancionId": cancion}, function(err, result) {
+                    if (err) {
+                        funcionCallback(null);
+                    } else {
+                        if(result > 0)
+                            funcionCallback(true);
+                        else
+                            funcionCallback(false);
+                    }
+                    db.close();
+                });
+            }
+        });
+    },
     modificarCancion : function(criterio, cancion, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
             if (err) {
@@ -127,7 +168,7 @@ module.exports = {
             }
         });
     },
-    obtenerUsuarios : function(criterio,funcionCallback){
+    obtenerUsuarios : function(criterio, funcionCallback){
         this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
             if (err) {
                 funcionCallback(null);
