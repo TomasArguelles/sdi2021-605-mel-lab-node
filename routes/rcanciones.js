@@ -41,26 +41,54 @@ module.exports = function(app, swig, gestorBD) {
                 gestorBD.esAutor(req.session.usuario,cancionId,function (compra){
                     if(compra){
                         gestorBD.obtenerComentarios(criterio,function(comentarios) {
-                            let respuesta = swig.renderFile('views/bcancion.html',
-                                {
-                                    cancion: canciones[0],
-                                    comentarios: comentarios,
-                                    compra: compra
-                                });
-                            res.send(respuesta);
-
-                        });
-                    } else {
-                        gestorBD.esPropietario(req.session.usuario,cancionId,function (compro){
-                            gestorBD.obtenerComentarios(criterio,function(comentarios) {
-                                console.log(compro)
+                            let configuracion = {
+                                url: "https://www.freeforexapi.com/api/live?pairs=EURUSD",
+                                method: "get",
+                                headers: {
+                                    "token": "ejemplo",
+                                }
+                            }
+                            let rest = app.get("rest");
+                            rest(configuracion, function (error, response, body) {
+                                console.log("cod: " + response.statusCode + " Cuerpo :" + body);
+                                let objetoRespuesta = JSON.parse(body);
+                                let cambioUSD = objetoRespuesta.rates.EURUSD.rate;
+// nuevo campo "usd"
+                                canciones[0].usd = cambioUSD * canciones[0].precio;
                                 let respuesta = swig.renderFile('views/bcancion.html',
                                     {
                                         cancion: canciones[0],
                                         comentarios: comentarios,
-                                        compra: compro
+                                        compra: compra
                                     });
                                 res.send(respuesta);
+                            })
+                        });
+                    } else {
+                        gestorBD.esPropietario(req.session.usuario,cancionId,function (compro){
+                            gestorBD.obtenerComentarios(criterio,function(comentarios) {
+                                let configuracion = {
+                                    url: "https://www.freeforexapi.com/api/live?pairs=EURUSD",
+                                    method: "get",
+                                    headers: {
+                                        "token": "ejemplo",
+                                    }
+                                }
+                                let rest = app.get("rest");
+                                rest(configuracion, function (error, response, body) {
+                                    console.log("cod: " + response.statusCode + " Cuerpo :" + body);
+                                    let objetoRespuesta = JSON.parse(body);
+                                    let cambioUSD = objetoRespuesta.rates.EURUSD.rate;
+// nuevo campo "usd"
+                                    canciones[0].usd = cambioUSD * canciones[0].precio;
+                                    let respuesta = swig.renderFile('views/bcancion.html',
+                                        {
+                                            cancion: canciones[0],
+                                            comentarios: comentarios,
+                                            compra: compra
+                                        });
+                                    res.send(respuesta);
+                                })
 
                             });
                         });
